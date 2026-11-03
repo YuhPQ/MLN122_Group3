@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="vi">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  /><title>Xây thành phố an cư</title
+  ><style>
+    :root {
+      font-family: system-ui, sans-serif;
+      color: #173f39;
+      background: #edf5ef;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+    }
+    header {
+      padding: 18px 3%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #123f37;
+      color: white;
+    }
+    h1 {
+      font-size: 26px;
+      margin: 0;
+    }
+    small {
+      opacity: 0.8;
+    }
+    button,
+    input {
+      font: inherit;
+    }
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 16px;
+      cursor: pointer;
+      background: #e0ece5;
+      color: #173f39;
+      font-weight: 700;
+    }
+    button:hover {
+      filter: brightness(0.94);
+    }
+    button:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+    .primary {
+      background: #eab95c;
+      color: #243e35;
+    }
+    main {
+      max-width: 1500px;
+      margin: auto;
+      padding: 22px;
+    }
+    .top {
+      display: grid;
+      grid-template-columns: 1fr 290px;
+      gap: 20px;
+    }
+    .panel {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 5px 25px #183e3810;
+    }
+    .tag {
+      font-size: 14px;
+      font-weight: 800;
+      color: #50756b;
+    }
+    h2 {
+      font-size: clamp(23px, 2.4vw, 34px);
+      line-height: 1.35;
+      margin: 16px 0;
+    }
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .option {
+      background: #f0f5f1;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 19px;
+    }
+    .correct {
+      background: #d0edd9;
+      outline: 2px solid #39865c;
+    }
+    .answer {
+      margin-top: 15px;
+      padding: 15px;
+      background: #eef6e5;
+      border-radius: 12px;
+      font-size: 18px;
+    }
+    .clock {
+      font-size: 70px;
+      font-weight: 900;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+    .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+    .city {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .team {
+      text-align: center;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid transparent;
+    }
+    .team.active {
+      border-color: #d99f33;
+    }
+    .team input {
+      width: 95%;
+      border: 0;
+      background: transparent;
+      text-align: center;
+      font-weight: 800;
+      color: #173f39;
+      font-size: 17px;
+      padding: 12px 3px;
+    }
+    .lot {
+      height: 150px;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      background: linear-gradient(#e6f3f5 75%, #bed7b4 75%);
+      padding-bottom: 16px;
+    }
+    .house {
+      width: 70%;
+      background: var(--color);
+      border-radius: 5px 5px 0 0;
+      transition: height 0.6s;
+      box-shadow: 7px 0 #0001;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: space-evenly;
+      justify-content: space-evenly;
+      overflow: hidden;
+    }
+    .window {
+      width: 20%;
+      height: 10px;
+      background: #fff6c8;
+      border-radius: 2px;
+      margin: 4px;
+    }
+    .tree {
+      position: absolute;
+      bottom: 13px;
+      right: 3px;
+      font-size: 30px;
+    }
+    .score {
+      font-size: 27px;
+      font-weight: 900;
+      padding: 8px;
+    }
+    .team button {
+      font-size: 14px;
+      padding: 7px;
+      margin: 0 2px 10px;
+    }
+    .muted {
+      font-size: 14px;
+      color: #547167;
+      line-height: 1.6;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 18px;
+      gap: 10px;
+    }
+    dialog {
+      border: 0;
+      border-radius: 22px;
+      max-width: 800px;
+      width: 90%;
+      padding: 30px;
+      color: #173f39;
+    }
+    dialog::backdrop {
+      background: #092c2b99;
+    }
+    .rank {
+      font-size: 23px;
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+    }
+    footer {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 13px;
+      color: #547167;
+    }
+    @media (max-width: 900px) {
+      .top {
+        grid-template-columns: 1fr;
+      }
+      .city {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .options {
+        grid-template-columns: 1fr;
+      }
+      header {
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+    }
+    @media print {
+      button {
+        display: none;
+      }
+    }
+  </style>
+  <header>
+    <div>
+      <small>KINH TẾ CHÍNH TRỊ • THỬ THÁCH 15 PHÚT</small>
+      <h1>🏗️ Xây thành phố an cư</h1>
+    </div>
+    <div class="controls">
+      <button onclick="document.querySelector('#rules').showModal()">
+        Luật chơi</button
+      ><button onclick="full()">Toàn màn hình</button
+      ><button onclick="results()">🏆 Xếp hạng</button>
+    </div>
+  </header>
+  <main>
+    <div class="top">
+      <section class="panel">
+        <div class="tag" id="progress"></div>
+        <h2 id="question"></h2>
+        <div class="options" id="options"></div>
+        <div class="answer" id="answer" hidden></div>
+        <div class="nav">
+          <button id="prev" onclick="move(-1)">← Câu trước</button
+          ><button class="primary" id="reveal" onclick="reveal()">
+            Hiện đáp án</button
+          ><button id="next" onclick="move(1)">Câu tiếp →</button>
+        </div>
+      </section>
+      <aside class="panel">
+        <div class="tag" style="text-align: center">THỜI GIAN THẢO LUẬN</div>
+        <div class="clock" id="clock">30</div>
+        <div class="controls">
+          <button class="primary" id="timer" onclick="toggleTimer()">
+            ▶ Bắt đầu</button
+          ><button onclick="resetTimer()">↺ 30 giây</button>
+        </div>
+        <p class="muted" id="turn"></p>
+        <p class="muted">
+          Hết giờ: mời đại diện trả lời, sau đó hiện đáp án và cộng điểm. Giơ
+          tay để giành quyền khi được người dẫn cho phép.
+        </p>
+        <button onclick="undo()">↶ Hoàn tác cộng điểm</button>
+      </aside>
+    </div>
+    <div class="city" id="city"></div>
+    <footer>
+      Công trình phát triển theo điểm • Tự lưu trên trình duyệt nếu được hỗ trợ
+      • <button onclick="restart()">Chơi lại</button>
+    </footer>
+  </main>
+  <dialog id="rules">
+    <h2>Chung tay xây thành phố an cư</h2>
+    <p>7 nhóm • 7 lượt chính • 2 câu giành quyền • 1 câu phụ khi hòa.</p>
+    <ol>
+      <li>
+        Mỗi nhóm được ưu tiên trả lời một câu chính. Thảo luận 30 giây, cử một
+        đại diện trả lời. Đúng: +10 điểm.
+      </li>
+      <li>
+        Nếu sai hoặc hết giờ, người dẫn mở quyền cho nhóm khác giơ tay. Đúng: +5
+        điểm. Mỗi nhóm chỉ trả lời một lần trong một câu.
+      </li>
+      <li>Câu 8–9: giơ tay sau hiệu lệnh; trả lời đúng +10 điểm.</li>
+      <li>
+        Người dẫn xác định thứ tự giơ tay và bấm cộng điểm. Câu đã có đáp án
+        đúng thì dừng tính điểm.
+      </li>
+      <li>
+        Cao điểm nhất chiến thắng. Nếu hòa ở vị trí đầu, dùng câu phụ chỉ cho
+        các nhóm đang hòa.
+      </li>
+    </ol>
+    <p>
+      Nhập tên trực tiếp trên từng ô nhóm. Hình ảnh công trình chỉ minh họa tiến
+      độ điểm, không phải mô phỏng chi phí hay hiệu quả chính sách.
+    </p>
+    <button class="primary" onclick="this.closest('dialog').close()">
+      Đã hiểu — vào chơi
+    </button>
+  </dialog>
+  <dialog id="results">
+    <h2>🏆 Thành phố của chúng ta</h2>
+    <div id="ranks"></div>
+    <p id="winner"></p>
+    <button onclick="this.closest('dialog').close()">Trở về game</button>
+  </dialog>
+  <script>
+    const questions = [
+      [
+        "Hai phân khúc nhà ở có mức rủi ro, thời gian thu hồi vốn và điều kiện triển khai tương đương. Phân khúc X có lợi nhuận kỳ vọng cao hơn, còn phân khúc Y có nhiều người cần nhà hơn nhưng phần lớn chưa đủ khả năng thanh toán. Nếu quyết định theo tín hiệu lợi nhuận, doanh nghiệp có xu hướng chọn phương án nào?",
+        [
+          "Chọn Y vì tổng số người cần nhà lớn hơn.",
+          "Chọn X vì khả năng sinh lời kỳ vọng cao hơn.",
+          "Chia đều vốn vì hai phân khúc có mức rủi ro tương đương.",
+          "Chọn Y vì nhu cầu chỗ ở cấp thiết hơn.",
+        ],
+        1,
+        "Khi các điều kiện khác tương đương và doanh nghiệp quyết định theo lợi nhuận, phân khúc X hấp dẫn hơn. Nhu cầu lớn nhưng thiếu khả năng thanh toán chưa chắc tạo động lực đầu tư tương ứng.",
+      ],
+      [
+        "Theo nội dung bài trình bày, nhận định nào đúng về cơ chế phân phối trong nền kinh tế thị trường định hướng XHCN ở Việt Nam?",
+        [
+          "Phân phối theo kết quả lao động, không tính đến mức đóng góp vốn của các chủ thể.",
+          "Phân phối theo mức đóng góp vốn, còn chênh lệch thu nhập được giải quyết thông qua an sinh xã hội.",
+          "Kết hợp phân phối theo lao động, hiệu quả kinh tế, đóng góp vốn và thông qua an sinh xã hội.",
+          "Phân phối theo nhu cầu của người dân, thay cho phân phối theo lao động và đóng góp vốn.",
+        ],
+        2,
+        "Cơ chế phân phối kết hợp nhiều hình thức. A bỏ qua đóng góp vốn; B bỏ qua phân phối theo lao động và hiệu quả kinh tế; D thay thế các căn cứ phân phối được nêu trong bài bằng nhu cầu.",
+      ],
+      [
+        "Trong một chương trình phát triển nhà ở xã hội, hoạt động nào thể hiện trực tiếp vai trò của Nhà nước trong việc điều hòa lợi ích giữa các chủ thể?",
+        [
+          "Lựa chọn phương án thi công để bảo đảm hiệu quả đầu tư của dự án.",
+          "Ban hành tiêu chí hưởng ưu đãi và quy định trách nhiệm của chủ đầu tư.",
+          "Lựa chọn căn hộ dựa trên thu nhập và khoảng cách đến nơi làm việc.",
+          "Thỏa thuận điều kiện vay dựa trên hồ sơ và khả năng trả nợ của khách hàng.",
+        ],
+        1,
+        "B thể hiện vai trò thiết lập cơ chế, chính sách của Nhà nước. Các phương án còn lại là quyết định trong hoạt động của doanh nghiệp, người mua hoặc bên cho vay.",
+      ],
+      [
+        "Nhận định nào đúng về quan hệ sở hữu và các thành phần kinh tế trong nền kinh tế thị trường định hướng XHCN ở Việt Nam?",
+        [
+          "Có nhiều hình thức sở hữu và thành phần kinh tế, trong đó kinh tế tập thể giữ vai trò chủ đạo.",
+          "Có nhiều hình thức sở hữu và thành phần kinh tế, trong đó kinh tế nhà nước giữ vai trò chủ đạo.",
+          "Có nhiều hình thức sở hữu và thành phần kinh tế, trong đó kinh tế tư nhân giữ vai trò chủ đạo.",
+          "Có nhiều hình thức sở hữu và thành phần kinh tế, trong đó kinh tế có vốn đầu tư nước ngoài giữ vai trò chủ đạo.",
+        ],
+        1,
+        "Việt Nam phát triển nền kinh tế đa sở hữu, đa thành phần, trong đó kinh tế nhà nước giữ vai trò chủ đạo. Giữ vai trò chủ đạo không có nghĩa là chỉ tồn tại một thành phần kinh tế.",
+      ],
+      [
+        "Một dự án nhà ở xã hội phải chờ phê duyệt kéo dài trong khi chủ đầu tư vẫn trả lãi cho khoản vốn đã vay. Nếu rút ngắn thời gian phê duyệt, khoản chi phí nào có cơ sở giảm trực tiếp nhất?",
+        [
+          "Chi phí lãi vay phát sinh trong thời gian chờ thủ tục.",
+          "Chi phí vật liệu cần dùng theo thiết kế công trình.",
+          "Chi phí vận hành tòa nhà sau khi người dân chuyển đến.",
+          "Chi phí đi lại hằng ngày của người mua nhà.",
+        ],
+        0,
+        "Rút ngắn thời gian chờ giúp giảm thời gian phát sinh lãi vay liên quan. Việc này không trực tiếp làm thay đổi lượng vật liệu, chi phí vận hành hay quãng đường đi làm.",
+      ],
+      [
+        "Điểm khác biệt về định hướng xã hội của kinh tế thị trường định hướng XHCN ở Việt Nam được nhóm nhấn mạnh là gì?",
+        [
+          "Ưu tiên tăng trưởng kinh tế, sau đó thực hiện công bằng xã hội khi tích lũy đủ nguồn lực.",
+          "Gắn phát triển kinh tế với tiến bộ và công bằng xã hội ngay trong từng bước và từng chính sách.",
+          "Giao mục tiêu tăng trưởng cho thị trường, còn công bằng xã hội được thực hiện qua chính sách trợ cấp.",
+          "Dùng mức tăng thu nhập bình quân làm căn cứ chính để xác định tiến bộ và công bằng xã hội.",
+        ],
+        1,
+        "Tiến bộ và công bằng xã hội được gắn với quá trình phát triển và thiết kế chính sách, không chờ đến sau tăng trưởng hoặc chỉ giới hạn ở trợ cấp.",
+      ],
+      [
+        "Một chương trình hỗ trợ nhà ở xã hội phát hiện có người không đủ điều kiện vẫn được duyệt mua, trong khi một số người đủ điều kiện bị bỏ sót. Biện pháp nào trực tiếp nhất để khắc phục sai lệch trong xét duyệt?",
+        [
+          "Tăng nguồn vốn vay ưu đãi dành cho các dự án.",
+          "Bổ sung quỹ đất để xây thêm nhà ở xã hội.",
+          "Công khai tiêu chí, đối chiếu hồ sơ và kiểm tra việc xét duyệt theo tiêu chí.",
+          "Rút ngắn thời gian xử lý hồ sơ theo quy trình hiện có.",
+        ],
+        2,
+        "Vấn đề nằm ở việc xác định đúng đối tượng thụ hưởng. Tăng vốn, tăng quỹ đất hoặc xử lý nhanh hơn chưa trực tiếp sửa được sai lệch trong xét duyệt.",
+      ],
+      [
+        "Một khu nhà ở xã hội đã có giá bán và điều kiện vay phù hợp với người lao động. Tuy nhiên, nhiều người ngại chuyển đến vì thời gian đi làm dài và thiếu trường học gần nhà. Biện pháp nào tác động trực tiếp nhất đến hai trở ngại được nêu?",
+        [
+          "Hỗ trợ thêm lãi suất vay mua căn hộ.",
+          "Giảm thuế cho doanh nghiệp xây dựng dự án.",
+          "Bổ sung tuyến xe buýt kết nối nơi làm việc và đầu tư trường học tại khu vực.",
+          "Rút ngắn thủ tục xét duyệt hồ sơ mua nhà.",
+        ],
+        2,
+        "Giá và điều kiện vay đã phù hợp; hai trở ngại còn lại là đi lại và trường học. Vì vậy, bổ sung tuyến xe buýt và đầu tư trường học giải quyết trực tiếp cả hai vấn đề.",
+      ],
+      [
+        "Một địa phương đề xuất hỗ trợ vốn và hạ tầng cho chủ đầu tư nhà ở xã hội. Tuy nhiên, dự thảo chưa quy định tiêu chí người mua và trách nhiệm của doanh nghiệp khi nhận hỗ trợ. Cần bổ sung nội dung nào để gắn ưu đãi với mục tiêu an sinh?",
+        [
+          "Tăng thời hạn vay cho doanh nghiệp để giảm áp lực dòng tiền.",
+          "Mở rộng quỹ đất dự án để tăng số lượng căn hộ được xây dựng.",
+          "Hỗ trợ lãi suất cho người mua để giảm áp lực trả nợ hằng tháng.",
+          "Công khai đối tượng thụ hưởng, cam kết của chủ đầu tư và cơ chế kiểm tra.",
+        ],
+        3,
+        "Vấn đề đề bài nêu là thiếu tiêu chí và trách nhiệm đi kèm ưu đãi. D giải quyết trực tiếp khoảng trống đó; A, B và C hỗ trợ vốn hoặc nguồn cung nhưng chưa giải quyết yêu cầu này.",
+      ],
+      [
+        "Một nhóm công nhân có thu nhập đủ trả tiền thuê nhà hằng tháng nhưng chưa tích lũy được khoản tiền trả trước để mua căn hộ. Giải pháp nào giúp họ có chỗ ở mà chưa phải đáp ứng yêu cầu tài chính của việc mua nhà?",
+        [
+          "Rút ngắn thời gian xét duyệt hồ sơ mua căn hộ.",
+          "Bổ sung tuyến giao thông kết nối khu nhà với nơi làm việc.",
+          "Phát triển quỹ nhà cho thuê với mức thuê phù hợp.",
+          "Bổ sung trường học và cơ sở y tế trong khu dân cư.",
+        ],
+        2,
+        "Trở ngại được nêu là chưa có tiền trả trước để mua nhà. Nhà cho thuê tạo lựa chọn chỗ ở phù hợp với khả năng chi trả hằng tháng. Các phương án khác giải quyết thủ tục, đi lại hoặc tiện ích.",
+      ],
+    ];
+
+    const colors = [
+      "#4b8d83",
+      "#d6a158",
+      "#7b8fb7",
+      "#be827a",
+      "#8d9c65",
+      "#8d80ae",
+      "#5b9fb0",
+    ];
+    let state = {
+      index: 0,
+      names: Array.from({ length: 7 }, (_, i) => "Nhóm " + (i + 1)),
+      scores: Array(7).fill(0),
+      awards: {},
+      history: [],
+    };
+    try {
+      let s = JSON.parse(localStorage.getItem("ancu-game-v1"));
+      if (
+        s &&
+        s.names?.length === 7 &&
+        s.scores?.length === 7 &&
+        Number.isInteger(s.index) &&
+        s.index >= 0 &&
+        s.index < 10
+      )
+        state = s;
+    } catch {}
+    let remaining = 30,
+      interval = null,
+      shown = false;
+    const $ = (id) => document.getElementById(id);
+    function save() {
+      try {
+        localStorage.setItem("ancu-game-v1", JSON.stringify(state));
+      } catch {}
+    }
+    function render() {
+      const i = state.index,
+        q = questions[i];
+      $("progress").textContent =
+        i < 7
+          ? `VÒNG 1 • LƯỢT NHÓM ${i + 1} • CÂU ${i + 1}/9`
+          : i < 9
+            ? `VÒNG 2 • GIÀNH QUYỀN • CÂU ${i + 1}/9`
+            : "CÂU PHỤ • CHỈ DÙNG KHI HÒA";
+      $("question").textContent = q[0];
+      $("options").replaceChildren(
+        ...q[1].map((t, j) => {
+          let d = document.createElement("div");
+          d.className = "option" + (shown && j === q[2] ? " correct" : "");
+          d.textContent = "ABCD"[j] + ". " + t;
+          return d;
+        }),
+      );
+      $("answer").hidden = !shown;
+      $("answer").textContent = "Đáp án " + "ABCD"[q[2]] + " — " + q[3];
+      $("reveal").disabled = shown;
+      $("prev").disabled = i === 0;
+      $("next").disabled = i === 9;
+      $("next").textContent = i === 8 ? "Câu phụ →" : "Câu tiếp →";
+      $("turn").textContent =
+        i < 7
+          ? `Ưu tiên ${state.names[i]}. Đúng +10; nhóm khác trả lời bổ sung đúng +5.`
+          : "Giơ tay sau hiệu lệnh. Nhóm trả lời đúng +10 điểm.";
+      renderCity();
+    }
+    function renderCity() {
+      $("city").replaceChildren(
+        ...state.names.map((name, j) => {
+          let card = document.createElement("section");
+          card.className = "team" + (state.index === j ? " active" : "");
+          let input = document.createElement("input");
+          input.value = name;
+          input.maxLength = 24;
+          input.setAttribute("aria-label", "Tên nhóm " + (j + 1));
+          input.onchange = () => {
+            state.names[j] = input.value.trim() || "Nhóm " + (j + 1);
+            save();
+            render();
+          };
+          card.append(input);
+          let lot = document.createElement("div");
+          lot.className = "lot";
+          let house = document.createElement("div");
+          house.className = "house";
+          house.style.setProperty("--color", colors[j]);
+          house.style.height = Math.min(120, 12 + state.scores[j] * 2) + "px";
+          for (
+            let k = 0;
+            k < Math.min(18, Math.floor(state.scores[j] / 5) * 3);
+            k++
+          ) {
+            let w = document.createElement("span");
+            w.className = "window";
+            house.append(w);
+          }
+          lot.append(house);
+          if (state.scores[j] >= 20) {
+            let tree = document.createElement("span");
+            tree.className = "tree";
+            tree.textContent = "🌳";
+            lot.append(tree);
+          }
+          card.append(lot);
+          let score = document.createElement("div");
+          score.className = "score";
+          score.textContent = state.scores[j] + " điểm";
+          card.append(score);
+          let b = document.createElement("button");
+          let pts = state.index < 7 && j !== state.index ? 5 : 10;
+          b.textContent = "Đúng +" + pts;
+          b.disabled = !shown || state.awards[state.index] !== undefined;
+          b.onclick = () => award(j, pts);
+          card.append(b);
+          return card;
+        }),
+      );
+    }
+    function award(j, pts) {
+      if (state.awards[state.index] !== undefined) return;
+      state.history.push({ q: state.index, j, pts });
+      state.awards[state.index] = { j, pts };
+      state.scores[j] += pts;
+      save();
+      renderCity();
+    }
+    function undo() {
+      let a = state.history.pop();
+      if (!a) return;
+      state.scores[a.j] -= a.pts;
+      delete state.awards[a.q];
+      state.index = a.q;
+      shown = true;
+      resetTimer();
+      save();
+      render();
+    }
+    function reveal() {
+      pause();
+      shown = true;
+      render();
+    }
+    function pause() {
+      clearInterval(interval);
+      interval = null;
+      $("timer").textContent = remaining ? "▶ Tiếp tục" : "Hết giờ";
+    }
+    function resetTimer() {
+      pause();
+      remaining = 30;
+      $("clock").textContent = "30";
+      $("clock").style.color = "";
+      $("timer").textContent = "▶ Bắt đầu";
+    }
+    function toggleTimer() {
+      if (interval) {
+        pause();
+        return;
+      }
+      if (!remaining) return;
+      let deadline = Date.now() + remaining * 1000;
+      $("timer").textContent = "⏸ Tạm dừng";
+      interval = setInterval(() => {
+        remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+        $("clock").textContent = remaining;
+        $("clock").style.color = remaining <= 5 ? "#b34b3f" : "";
+        if (!remaining) {
+          pause();
+          $("clock").textContent = "HẾT GIỜ";
+          $("clock").style.fontSize = "42px";
+        }
+      }, 150);
+    }
+    function move(n) {
+      pause();
+      state.index = Math.max(0, Math.min(9, state.index + n));
+      shown = false;
+      resetTimer();
+      $("clock").style.fontSize = "";
+      save();
+      render();
+    }
+    function results() {
+      pause();
+      let ranks = state.scores
+        .map((s, j) => ({ s, j }))
+        .sort((a, b) => b.s - a.s);
+      $("ranks").replaceChildren(
+        ...ranks.map((r, k) => {
+          let d = document.createElement("div");
+          d.className = "rank";
+          d.textContent = `${k + 1}. ${state.names[r.j]} — ${r.s} điểm`;
+          return d;
+        }),
+      );
+      let winners = ranks.filter((r) => r.s === ranks[0].s);
+      $("winner").textContent =
+        ranks[0].s === 0
+          ? "Chưa có điểm. Hãy bắt đầu thử thách!"
+          : winners.length > 1
+            ? "Đang hòa ở vị trí đầu: " +
+              winners.map((r) => state.names[r.j]).join(", ") +
+              ". Dùng câu phụ để phân định."
+            : "🎉 Chúc mừng " + state.names[ranks[0].j] + "!";
+      $("results").showModal();
+    }
+    function restart() {
+      if (!confirm("Xóa toàn bộ điểm và bắt đầu lại?")) return;
+      pause();
+      state.scores.fill(0);
+      state.index = 0;
+      state.awards = {};
+      state.history = [];
+      shown = false;
+      resetTimer();
+      save();
+      render();
+    }
+    function full() {
+      if (document.fullscreenElement) document.exitFullscreen?.();
+      else document.documentElement.requestFullscreen?.().catch(() => {});
+    }
+    render();
+  </script>
+</html>
